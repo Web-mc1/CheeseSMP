@@ -158,6 +158,13 @@ h2{
     font-weight:700;
 }
 
+#playerList{
+    margin-top:10px;
+    font-size:14px;
+    color:#ffd54f;
+    line-height:1.6;
+}
+
 footer{
     background:#0a0c10;
     text-align:center;
@@ -190,36 +197,38 @@ footer{
 <section id="about">
 <h2>About</h2>
 <p style="max-width:900px;margin:auto;text-align:center;">
-Welcome to CheeseWhiz SMP, a community-driven Minecraft survival server with events, building, exploration, and a friendly community.
+Welcome to CheeseWhiz SMP, a survival Minecraft server with events, building, exploration, and a friendly community.
 </p>
 </section>
 
 <section id="features">
+
 <h2>Features</h2>
 
 <div class="cards">
 
 <div class="card">
 <h3>Survival</h3>
-<p>Enhanced vanilla survival experience.</p>
+<p>Enhanced vanilla gameplay experience.</p>
 </div>
 
 <div class="card">
 <h3>Events</h3>
-<p>Fun server events with challenges and rewards.</p>
+<p>Regular events with rewards and challenges.</p>
 </div>
 
 <div class="card">
 <h3>Cross-Platform</h3>
-<p>Join from Java & Bedrock Edition.</p>
+<p>Java + Bedrock support.</p>
 </div>
 
 <div class="card">
 <h3>Community</h3>
-<p>Active and friendly player base.</p>
+<p>Friendly and active player base.</p>
 </div>
 
 </div>
+
 </section>
 
 <section id="join">
@@ -246,6 +255,9 @@ Status: <span id="status">Loading...</span>
 Players: <span id="players">Loading...</span>
 </p>
 
+<p style="margin-top:10px;">Online Players:</p>
+<div id="playerList">Loading...</div>
+
 <a class="btn" href="https://discord.gg/Hv4NvYDN3x" target="_blank">
 Join Discord
 </a>
@@ -266,21 +278,34 @@ async function loadServerStatus(){
 
         const statusEl = document.getElementById("status");
         const playersEl = document.getElementById("players");
+        const listEl = document.getElementById("playerList");
 
         if(data.online){
             statusEl.textContent = "Online";
             statusEl.className = "status-online";
 
             playersEl.textContent = `${data.players.online} / ${data.players.max}`;
+
+            if(data.players.list && data.players.list.length > 0){
+                listEl.innerHTML = data.players.list
+                    .map(p => `🟡 ${p.name_clean}`)
+                    .join("<br>");
+            } else {
+                listEl.innerHTML = "No players online";
+            }
+
         } else {
             statusEl.textContent = "Offline";
             statusEl.className = "status-offline";
 
             playersEl.textContent = "0 / 0";
+            listEl.innerHTML = "Server is offline";
         }
+
     } catch (e){
         document.getElementById("status").textContent = "Error";
         document.getElementById("players").textContent = "-";
+        document.getElementById("playerList").innerHTML = "Failed to load";
     }
 }
 
